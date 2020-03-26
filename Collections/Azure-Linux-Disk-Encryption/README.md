@@ -21,6 +21,6 @@ $assignment
 
 az policy definition create --name 'LinuxDiskEncryption' --display-name 'Encrypt Disks of Linux VMs' --description 'This policy will deploy an ARM template for encrypting disks of Azure Linux Virtual Machines, for all disks. The policy checks whether the disk is encrypted and if it is a Linux VM. Based on the result of the policy condition, using the deployIfNotExists effect, it deploys a Disk Encryption ARM template.' --rules 'https://raw.githubusercontent.com/hakashya/Azure-Policy/master/Collections/Azure-Linux-Disk-Encryption/azurepolicy.rules.json' --params 'https://raw.githubusercontent.com/hakashya/Azure-Policy/master/Collections/Azure-Linux-Disk-Encryption/azurepolicy.parameters.json' --mode All
 
-az policy assignment create --name <assignmentname> --scope <scope> --policy "audit-classic-VM" 
+az policy assignment create --name <assignmentname> --scope <scope> --policy "LinuxDiskEncryption" 
 
 ````
