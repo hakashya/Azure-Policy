@@ -1,0 +1,125 @@
+{
+    "if": {
+        "allOf": [
+            {
+                "field": "type",
+                "equals": "Microsoft.Compute/disks"
+            },
+            {
+                "field": "Microsoft.Compute/disks/osType",
+                "contains": "Windows"
+            }
+        ]
+    },
+    "then": {
+        "effect": "deployIfNotExists",
+        "details": {
+            "type": "Microsoft.Compute/disks",
+            "name": "[field('name')]",
+            "existenceCondition": {
+                "field": "Microsoft.Compute/disks/encryptionSettings.enabled",
+                "equals": "true"
+            },
+            "roleDefinitionIds": [
+                "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+            ],
+            "deployment": {
+                "properties": {
+                    "mode": "incremental",
+                    "template": {
+                        "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                        "contentVersion": "1.0.0.0",
+                        "parameters": {
+                            "vmName": {
+                                "type": "string"
+                            },
+                            "keyVaultName": {
+                                "type": "string"
+                            },
+                            "keyVaultResourceGroup": {
+                                "type": "string"
+                            },
+                            "keyEncryptionKeyURL": {
+                                "type": "string",
+                                "defaultValue": ""
+                            },
+                            "volumeType": {
+                                "type": "string",
+                                "defaultValue": "All"
+                            },
+                            "forceUpdateTag": {
+                                "type": "string",
+                                "defaultValue": "1.0"
+                            },
+                            "resizeOSDisk": {
+                                "type": "bool",
+                                "defaultValue": false
+                            },
+                            "location": {
+                                "type": "string"
+                            }
+                        },
+                        "variables": {
+                            "extensionName": "AzureDiskEncryption",
+                            "extensionVersion": "2.2",
+                            "encryptionOperation": "EnableEncryption",
+                            "keyEncryptionAlgorithm": "RSA-OAEP",
+                            "keyVaultResourceID": "[resourceId(parameters('keyVaultResourceGroup'), 'Microsoft.KeyVault/vaults/', parameters('keyVaultName'))]"
+                        },
+                        "resources": [
+                            {
+                                "type": "Microsoft.Compute/virtualMachines/extensions",
+                                "name": "[concat(parameters('vmName'),'/', variables('extensionName'))]",
+                                "location": "[parameters('location')]",
+                                "apiVersion": "2017-03-30",
+                                "properties": {
+                                    "publisher": "Microsoft.Azure.Security",
+                                    "type": "[variables('extensionName')]",
+                                    "typeHandlerVersion": "[variables('extensionVersion')]",
+                                    "autoUpgradeMinorVersion": true,
+                                    "forceUpdateTag": "[parameters('forceUpdateTag')]",
+                                    "settings": {
+                                        "EncryptionOperation": "[variables('encryptionOperation')]",
+                                        "KeyVaultURL": "[reference(variables('keyVaultResourceId'),'2016-10-01').vaultUri]",
+                                        "KeyVaultResourceId": "[variables('keyVaultResourceID')]",
+                                        "KeyEncryptionKeyURL": "[parameters('keyEncryptionKeyURL')]",
+                                        "KekVaultResourceId": "[variables('keyVaultResourceID')]",
+                                        "KeyEncryptionAlgorithm": "[variables('keyEncryptionAlgorithm')]",
+                                        "VolumeType": "[parameters('volumeType')]",
+                                        "ResizeOSDisk": "[parameters('resizeOSDisk')]"
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "parameters": {
+                        "vmName": {
+                            "value": "[last(split(field('Microsoft.Compute/disks/managedBy'),'/'))]"
+                        },
+                        "keyVaultName": {
+                            "value": "[parameters('keyVaultName')]"
+                        },
+                        "keyVaultResourceGroup": {
+                            "value": "[parameters('keyVaultResourceGroup')]"
+                        },
+                        "keyEncryptionKeyURL": {
+                            "value": "[parameters('keyEncryptionKeyURL')]"
+                        },
+                        "volumeType": {
+                            "value": "[parameters('volumeType')]"
+                        },
+                        "forceUpdateTag": {
+                            "value": "[parameters('forceUpdateTag')]"
+                        },
+                        "resizeOSDisk": {
+                            "value": "[parameters('resizeOSDisk')]"
+                        },
+                        "location": {
+                            "value": "[field('location')]"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

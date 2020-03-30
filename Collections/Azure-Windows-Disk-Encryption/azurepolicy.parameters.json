@@ -36,5 +36,13 @@
             "description": "Pass in an unique value like a GUID everytime the operation needs to be force run"
         },
         "defaultValue": "1.0"
+    },
+    "resizeOSDisk": {
+        "type": "Boolean",
+        "metadata": {
+            "displayName": "Resize OS Disk",
+            "description": "Should the OS partition be resized to occupy full OS VHD before splitting system volume"
+        },
+        "defaultValue": false
     }
 }
