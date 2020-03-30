@@ -1,0 +1,45 @@
+{
+  "if": {
+    "field": "type",
+    "equals": "Microsoft.EventHub/Namespaces"
+  },
+  "then": {
+    "effect": "deployIfNotExists",
+    "details": {
+      "type": "Microsoft.EventHub/namespaces/eventHubs",
+      "existenceCondition": {
+        "field": "Microsoft.EventHub/namespaces/eventhubs/createdAt",
+        "exists": "true"
+      },
+      "roleDefinitionIds": [
+        "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+      ],
+      "deployment": {
+        "properties": {
+          "mode": "incremental",
+          "template": {
+            "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {
+              "eventhubname": {
+                "type": "string"
+              }
+            },
+            "resources": [
+              {
+                "name": "[concat(parameters('eventhubname'), '/current')]",
+                "type": "Microsoft.EventHub/Namespaces/EventHubs",
+                "apiVersion": "2017-04-01"
+              }
+            ]
+          },
+          "parameters": {
+            "eventhubname": {
+              "value": "[field('name')]"
+            }
+          }
+        }
+      }
+    }
+  }
+}
