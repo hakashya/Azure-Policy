@@ -1,0 +1,16 @@
+{
+    "effect": {
+        "type": "String",
+        "metadata": {
+            "displayName": "Deploy DDOS Plan to subnets",
+            "description": "This rule will find the subnets and link it to DDOS Plan"
+        },
+        "allowedValues": [
+            "Audit",
+            "Deny",
+            "Disabled",
+            "DeployIfNotExists"
+        ],
+        "defaultValue": "DeployIfNotExists"
+    }
+}

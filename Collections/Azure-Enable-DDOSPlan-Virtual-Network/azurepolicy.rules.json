@@ -1,0 +1,99 @@
+{
+    "if": {
+        "allOf": [
+            {
+                "field": "type",
+                "equals": "Microsoft.Network/virtualNetworks"
+            }
+        ]
+    },
+    "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[field('name')]",
+            "roleDefinitionIds": [
+                "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+            ],
+            "existenceCondition": {
+                "anyOf": [
+                    {
+                        "allOf": [
+                            {
+                                "field": "Microsoft.Network/virtualNetworks/subnets[*].ipConfigurations[*].publicIPAddress.ipConfiguration",
+                                "exists": "true"
+                            },
+                            {
+                                "field": "Microsoft.Network/virtualNetworks/enableDdosProtection",
+                                "equals": "true"
+                            }
+                        ]
+                    },
+                    {
+                        "field": "Microsoft.Network/virtualNetworks/subnets[*].ipConfigurations[*].publicIPAddress.ipConfiguration",
+                        "equals": "false"
+                    }
+                ]
+            },
+            "deployment": {
+                "properties": {
+                    "mode": "incremental",
+                    "template": {
+                        "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                        "contentVersion": "1.0.0.0",
+                        "parameters": {
+                            "vnetName": {
+                                "type": "string",
+                                "metadata": {
+                                    "description": "Name of the Virtual Network"
+                                }
+                            },
+                            "location": {
+                                "type": "string"
+                            }
+                        },
+                        "variables": {
+                            "updateTheVnet": {
+                                "enableDdosProtection": true,
+                                "ddosProtectionPlan": {
+                                    "id": "/subscriptions/2a89ec63-0483-4f3a-b5cf-a3851475c73b/resourceGroups/DDoSPlanRG/providers/Microsoft.Network/ddosProtectionPlans/DDoSPlan"
+                                }
+                            }
+                        },
+                        "resources": [
+                            {
+                                "type": "Microsoft.Resources/deployments",
+                                "name": "Link-The-NSG",
+                                "apiVersion": "2018-05-01",
+                                "properties": {
+                                    "mode": "Incremental",
+                                    "template": {
+                                        "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                                        "contentVersion": "1.0.0.0",
+                                        "resources": [
+                                            {
+                                                "apiVersion": "2018-11-01",
+                                                "type": "Microsoft.Network/virtualNetworks",
+                                                "location": "[parameters('location')]",
+                                                "name": "[parameters('vnetName')]",
+                                                "properties": "[union(reference(resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName')), '2020-04-01'), variables('updateTheVnet'))]"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "parameters": {
+                        "vnetName": {
+                            "value": "[field('name')]"
+                        },
+                        "location": {
+                            "value": "[field('location')]"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
