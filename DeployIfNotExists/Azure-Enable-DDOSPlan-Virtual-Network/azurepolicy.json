@@ -10,7 +10,7 @@
             ]
         },
         "then": {
-            "effect": "[parameters('effect')]",
+            "effect": "deployIfNotExists",
             "details": {
                 "type": "Microsoft.Network/virtualNetworks",
                 "name": "[field('name')]",
@@ -99,20 +99,5 @@
             }
         }
     },
-    "parameters": {
-        "effect": {
-            "type": "String",
-            "metadata": {
-                "displayName": "Vipps - Deploy DDOS Plan to subnets that have publicip Link",
-                "description": "This rule will find the subnets that are having link to a resource deployed in them and if found a link to publicip then it is link it to DDOS Plan"
-            },
-            "allowedValues": [
-                "Audit",
-                "Deny",
-                "Disabled",
-                "DeployIfNotExists"
-            ],
-            "defaultValue": "DeployIfNotExists"
-        }
-    }
+    "parameters": {}
 }
