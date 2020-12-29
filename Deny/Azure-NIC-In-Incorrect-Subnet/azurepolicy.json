@@ -1,0 +1,29 @@
+{
+    "mode": "All",
+    "policyRule": {
+        "if": {
+            "allOf": [
+                {
+                    "field": "type",
+                    "equals": "Microsoft.Network/networkInterfaces"
+                },
+                {
+                    "field": "Microsoft.Network/networkInterfaces/ipconfigurations[*].subnet.id",
+                    "equals": "[parameters('subnetId')]"
+                }
+            ]
+        },
+        "then": {
+            "effect": "deny"
+        }
+    },
+    "parameters": {
+        "subnetId": {
+            "type": "String",
+            "metadata": {
+                "displayName": "Subnet Id",
+                "description": "Resource Id for Subnet in the format /subscriptions/{subscription_id}/resourcegroups/{resource_group}/providers/microsoft.network/virtualnetworks/{vnet}/subnets/{subnet-name}"
+            }
+        }
+    }
+}

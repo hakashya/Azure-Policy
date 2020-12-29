@@ -1,0 +1,9 @@
+{
+    "subnetId": {
+        "type": "String",
+        "metadata": {
+            "displayName": "Subnet Id",
+            "description": "Resource Id for Subnet in the format /subscriptions/{subscription_id}/resourcegroups/{resource_group}/providers/microsoft.network/virtualnetworks/{vnet}/subnets/{subnet-name}"
+        }
+    }
+}
