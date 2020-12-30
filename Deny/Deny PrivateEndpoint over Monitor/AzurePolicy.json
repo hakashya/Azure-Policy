@@ -1,0 +1,29 @@
+{
+  "mode": "All",
+  "policyRule": {
+    "if": {
+      "allOf": [
+        {
+          "field": "type",
+          "equals": "Microsoft.Network/privateEndpoints"
+        },
+        {
+          "anyOf": [
+            {
+              "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].groupIds[*]",
+              "equals": "azuremonitor"
+            },
+            {
+              "field": "Microsoft.Network/privateEndpoints/manualPrivateLinkServiceConnections[*].groupIds[*]",
+              "equals": "azuremonitor"
+            }
+          ]
+        }
+      ]
+    },
+    "then": {
+      "effect": "deny"
+    }
+  },
+  "parameters": {}
+}
