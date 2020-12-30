@@ -21,6 +21,6 @@ $assignment
 
 az policy definition create --name 'DenyNICinIncorrectSubnet' --display-name 'Deny NIC in Incorrect Subnets' --description 'This policy will block the create or update operation on Network Interfaces if the subnet chosen is not allowed. The disallowed subnet resource IDs are passed to the policy as parameters.' --rules 'https://raw.githubusercontent.com/hakashya/Azure-Policy/master/Deny/Azure-NIC-In-Incorrect-Subnet/azurepolicy.rules.json' --params 'https://raw.githubusercontent.com/hakashya/Azure-Policy/master/Deny/Azure-NIC-In-Incorrect-Subnet/azurepolicy.parameters.json' --mode All
 
-az policy assignment create --name <assignmentname> --scope <scope> --policy "LinuxDiskEncryption" --params <Parameters>
+az policy assignment create --name <assignmentname> --scope <scope> --policy "DenyNICinIncorrectSubnet" --params <Parameters>
 
 ````

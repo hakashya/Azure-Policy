@@ -21,6 +21,6 @@ $assignment
 
 az policy definition create --name 'DenyEmptyTagValues' --display-name 'Deny Empty Tag Values' --description 'This policy will block the create or update operation on any resource that has null or empty value for the specified tag name. The policy also does not accept blank values (such as empty space).' --rules 'https://raw.githubusercontent.com/hakashya/Azure-Policy/master/Deny/Azure-Tags-Not-Null-Empty/azurepolicy.rules.json' --params 'https://raw.githubusercontent.com/hakashya/Azure-Policy/master/Deny/Azure-Tags-Not-Null-Empty/azurepolicy.parameters.json' --mode All
 
-az policy assignment create --name <assignmentname> --scope <scope> --policy "LinuxDiskEncryption" --params <Parameters>
+az policy assignment create --name <assignmentname> --scope <scope> --policy "DenyEmptyTagValues" --params <Parameters>
 
 ````
