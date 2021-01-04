@@ -1,0 +1,73 @@
+{
+  "parameters": {
+    "targetLocation": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Target Location",
+        "description": "The Location/Region in which the NSG resides on. To get a list of valid locations, run 'Get-AzLocation' or 'az account list-locations' in Azure Cloud Shell."
+      },
+      "defaultValue": "eastus"
+    },
+    "storageAccountResourceID": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Storage Account Resource ID",
+        "description": "Storage Account Resource ID to push flowlog data to.",
+        "strongType": "Microsoft.Storage/storageAccounts",
+        "assignPermissions": true
+      }
+    },
+    "flowLogRetentionEnable": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Enable Flow Log Retention",
+        "description": "Enable Storage Account Retention."
+      },
+      "allowedValues": ["true", "false"],
+      "defaultValue": "true"
+    },
+    "flowLogRetention": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Flow Log Retention (Days)",
+        "description": "Storage Account Retention Policy in days."
+      },
+      "defaultValue": "90"
+    },
+    "flowLogVersion": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Flow Log Version",
+        "description": "Version 1 logs ingress and egress IP traffic flows for both allowed and denied traffic. Version 2 provides additional throughput information (bytes and packets) per flow."
+      },
+      "allowedValues": ["1", "2"],
+      "defaultValue": "2"
+    },
+    "trafficAnalyticsEnable": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Enable Traffic Analytics",
+        "description": "Enable Traffic Analytics on NSG."
+      },
+      "allowedValues": ["true", "false"],
+      "defaultValue": "false"
+    },
+    "trafficAnalyticsInterval": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Traffic Analytics Interval (Minutes)",
+        "description": "Traffic Analytics processes blobs for chosen duration at the frequency specified (minutes)."
+      },
+      "defaultValue": "10"
+    },
+    "analyticsWorkspaceResourceID": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Log Analytics Workspace Resource ID",
+        "description": "Log Analytics Workspace Resource ID to push NSG flowlog data for Traffic Analytics.",
+        "strongType": "omsWorkspace",
+        "assignPermissions": true
+      }
+    }
+  }
+}

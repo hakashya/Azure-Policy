@@ -1,0 +1,253 @@
+{
+  "mode": "Indexed",
+  "policyRule": {
+    "if": {
+      "allOf": [
+        {
+          "field": "type",
+          "equals": "Microsoft.Network/networkSecurityGroups"
+        },
+        {
+          "field": "location",
+          "equals": "[parameters('targetLocation')]"
+        }
+      ]
+    },
+    "then": {
+      "effect": "deployIfNotExists",
+      "details": {
+        "type": "Microsoft.Network/networkWatchers/flowLogs",
+        "name": "[concat('NetworkWatcher_', field('location'), '/Microsoft.Network',  substring(resourceGroup().name,0,5), field('name'))]",
+        "roleDefinitionIds": [
+          "/providers/microsoft.authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa",
+          "/providers/microsoft.authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",
+          "/providers/microsoft.authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293"
+        ],
+        "resourceGroupName": "NetworkWatcherRG",
+        "existenceCondition": {
+          "allOf": [
+            {
+              "field": "Microsoft.Network/networkWatchers/flowLogs/enabled",
+              "equals": "true"
+            },
+            {
+              "field": "Microsoft.Network/networkWatchers/flowLogs/storageId",
+              "equals": "[parameters('storageAccountResourceID')]"
+            },
+            {
+              "field": "Microsoft.Network/networkWatchers/flowLogs/retentionPolicy.enabled",
+              "equals": "[parameters('flowLogRetentionEnable')]"
+            },
+            {
+              "field": "Microsoft.Network/networkWatchers/flowLogs/retentionPolicy.days",
+              "equals": "[parameters('flowLogRetention')]"
+            },
+            {
+              "field": "Microsoft.Network/networkWatchers/flowLogs/format.version",
+              "equals": "[parameters('flowLogVersion')]"
+            },
+            {
+              "field": "Microsoft.Network/networkWatchers/flowLogs/flowAnalyticsConfiguration.networkWatcherFlowAnalyticsConfiguration.enabled",
+              "equals": "[parameters('trafficAnalyticsEnable')]"
+            },
+            {
+              "field": "Microsoft.Network/networkWatchers/flowLogs/flowAnalyticsConfiguration.networkWatcherFlowAnalyticsConfiguration.trafficAnalyticsInterval",
+              "equals": "[parameters('trafficAnalyticsInterval')]"
+            },
+            {
+              "field": "Microsoft.Network/networkWatchers/flowLogs/flowAnalyticsConfiguration.networkWatcherFlowAnalyticsConfiguration.workspaceResourceId",
+              "equals": "[parameters('analyticsWorkspaceResourceID')]"
+            }
+          ]
+        },
+        "deployment": {
+          "properties": {
+            "mode": "incremental",
+            "parameters": {
+              "nsgName": {
+                "value": "[field('name')]"
+              },
+              "location": {
+                "value": "[field('location')]"
+              },
+              "nsgResourceGroup": {
+                "value": "[resourceGroup().name]"
+              },
+              "nsgResourceID": {
+                "value": "[concat(resourceGroup().id, '/providers/Microsoft.Network/networkSecurityGroups/', field('name'))]"
+              },
+              "storageAccountResourceID": {
+                "value": "[parameters('storageAccountResourceID')]"
+              },
+              "flowLogRetentionEnable": {
+                "value": "[parameters('flowLogRetentionEnable')]"
+              },
+              "flowLogRetention": {
+                "value": "[parameters('flowLogRetention')]"
+              },
+              "flowLogVersion": {
+                "value": "[parameters('flowLogVersion')]"
+              },
+              "trafficAnalyticsEnable": {
+                "value": "[parameters('trafficAnalyticsEnable')]"
+              },
+              "trafficAnalyticsInterval": {
+                "value": "[parameters('trafficAnalyticsInterval')]"
+              },
+              "analyticsWorkspaceResourceID": {
+                "value": "[parameters('analyticsWorkspaceResourceID')]"
+              }
+            },
+            "template": {
+              "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+              "contentVersion": "1.0.0.0",
+              "parameters": {
+                "nsgName": {
+                  "type": "String"
+                },
+                "location": {
+                  "type": "String"
+                },
+                "nsgResourceGroup": {
+                  "type": "String"
+                },
+                "nsgResourceID": {
+                  "type": "String"
+                },
+                "storageAccountResourceID": {
+                  "type": "String"
+                },
+                "flowLogRetentionEnable": {
+                  "type": "String"
+                },
+                "flowLogRetention": {
+                  "type": "String"
+                },
+                "flowLogVersion": {
+                  "type": "String"
+                },
+                "trafficAnalyticsEnable": {
+                  "type": "String"
+                },
+                "trafficAnalyticsInterval": {
+                  "type": "String"
+                },
+                "analyticsWorkspaceResourceID": {
+                  "type": "String"
+                }
+              },
+              "variables": {
+                "flowLogName": "[concat('NetworkWatcher_', parameters('location'), '/Microsoft.Network', substring(parameters('nsgResourceGroup'),0,5) , parameters('nsgName'))]"
+              },
+              "resources": [
+                {
+                  "name": "[variables('flowLogName')]",
+                  "type": "Microsoft.Network/networkWatchers/flowLogs",
+                  "apiVersion": "2020-04-01",
+                  "location": "[parameters('location')]",
+                  "properties": {
+                    "targetResourceId": "[parameters('nsgResourceID')]",
+                    "storageId": "[parameters('storageAccountResourceID')]",
+                    "enabled": "true",
+                    "flowAnalyticsConfiguration": {
+                      "networkWatcherFlowAnalyticsConfiguration": {
+                        "enabled": "[parameters('trafficAnalyticsEnable')]",
+                        "workspaceResourceId": "[parameters('analyticsWorkspaceResourceID')]",
+                        "trafficAnalyticsInterval": "[parameters('trafficAnalyticsInterval')]"
+                      }
+                    },
+                    "retentionPolicy": {
+                      "days": "[parameters('flowLogRetention')]",
+                      "enabled": "[parameters('flowLogRetentionEnable')]"
+                    },
+                    "format": {
+                      "type": "JSON",
+                      "version": "[parameters('flowLogVersion')]"
+                    }
+                  }
+                }
+              ],
+              "outputs": {
+                "flowLogName": {
+                  "type": "string",
+                  "value": "[variables('flowLogName')]"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "parameters": {
+    "targetLocation": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Target Location",
+        "description": "The Location/Region in which the NSG resides on. To get a list of valid locations, run 'Get-AzLocation' or 'az account list-locations' in Azure Cloud Shell."
+      },
+      "defaultValue": "eastus"
+    },
+    "storageAccountResourceID": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Storage Account Resource ID",
+        "description": "Storage Account Resource ID to push flowlog data to.",
+        "strongType": "Microsoft.Storage/storageAccounts",
+        "assignPermissions": true
+      }
+    },
+    "flowLogRetentionEnable": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Enable Flow Log Retention",
+        "description": "Enable Storage Account Retention."
+      },
+      "allowedValues": ["true", "false"],
+      "defaultValue": "true"
+    },
+    "flowLogRetention": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Flow Log Retention (Days)",
+        "description": "Storage Account Retention Policy in days."
+      },
+      "defaultValue": "90"
+    },
+    "flowLogVersion": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Flow Log Version",
+        "description": "Version 1 logs ingress and egress IP traffic flows for both allowed and denied traffic. Version 2 provides additional throughput information (bytes and packets) per flow."
+      },
+      "allowedValues": ["1", "2"],
+      "defaultValue": "2"
+    },
+    "trafficAnalyticsEnable": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Enable Traffic Analytics",
+        "description": "Enable Traffic Analytics on NSG."
+      },
+      "allowedValues": ["true", "false"],
+      "defaultValue": "false"
+    },
+    "trafficAnalyticsInterval": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Traffic Analytics Interval (Minutes)",
+        "description": "Traffic Analytics processes blobs for chosen duration at the frequency specified (minutes)."
+      },
+      "defaultValue": "10"
+    },
+    "analyticsWorkspaceResourceID": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Log Analytics Workspace Resource ID",
+        "description": "Log Analytics Workspace Resource ID to push NSG flowlog data for Traffic Analytics.",
+        "strongType": "omsWorkspace",
+        "assignPermissions": true
+      }
+    }
+  }
+}
