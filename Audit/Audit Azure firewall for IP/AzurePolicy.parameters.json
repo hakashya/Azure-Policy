@@ -1,0 +1,12 @@
+{
+  "parameters": {
+    "notAllowedAddresses": {
+      "type": "Array",
+      "metadata": {
+        "displayName": "notAllowedAddresses",
+        "description": "List of not allowed address"
+      },
+      "defaultValue": ["*"]
+    }
+  }
+}
