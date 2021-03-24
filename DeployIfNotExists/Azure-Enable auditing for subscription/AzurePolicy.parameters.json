@@ -1,0 +1,28 @@
+{
+  "parameters": {
+    "storageAccount": {
+      "type": "String",
+      "metadata": {
+        "displayName": "storageAccount",
+        "description": null
+      },
+      "defaultValue": "enterstorage"
+    },
+    "logsEnabled": {
+      "type": "String",
+      "metadata": {
+        "displayName": "logsEnabled",
+        "description": null
+      },
+      "defaultValue": "[parameters('logsEnabled')]"
+    },
+    "profileName": {
+      "type": "String",
+      "metadata": {
+        "displayName": "profileName",
+        "description": null
+      },
+      "defaultValue": "[parameters('profileName')]"
+    }
+  }
+}

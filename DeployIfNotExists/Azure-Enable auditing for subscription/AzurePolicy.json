@@ -1,0 +1,131 @@
+{
+  "mode": "All",
+  "policyRule": {
+    "if": {
+      "field": "type",
+      "equals": "Microsoft.Resources/subscriptions"
+    },
+    "then": {
+      "effect": "deployIfNotExists",
+      "details": {
+        "type": "Microsoft.Insights/diagnosticSettings",
+        "existenceCondition": {
+          "allOf": [
+            {
+              "field": "Microsoft.Insights/diagnosticSettings/logs.enabled",
+              "equals": "true"
+            }
+          ]
+        },
+        "deployment": {
+          "properties": {
+            "mode": "incremental",
+            "template": {
+              "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+              "contentVersion": "1.0.0.0",
+              "parameters": {
+                "storageAccount": {
+                  "type": "string"
+                },
+                "logsEnabled": {
+                  "type": "string"
+                },
+                "profileName": {
+                  "type": "string"
+                }
+              },
+              "variables": {},
+              "resources": [
+                {
+                  "type": "Microsoft.Insights/diagnosticSettings",
+                  "apiVersion": "2017-05-01-preview",
+                  "name": "[parameters('profileName')]",
+                  "location": "global",
+                  "dependsOn": [],
+                  "properties": {
+                    "storageAccountId": "[parameters('storageAccount')]",
+                    "logs": [
+                      {
+                        "category": "Administrative",
+                        "enabled": "[parameters('logsEnabled')]"
+                      },
+                      {
+                        "category": "Security",
+                        "enabled": "[parameters('logsEnabled')]"
+                      },
+                      {
+                        "category": "ServiceHealth",
+                        "enabled": "[parameters('logsEnabled')]"
+                      },
+                      {
+                        "category": "Alert",
+                        "enabled": "[parameters('logsEnabled')]"
+                      },
+                      {
+                        "category": "Recommendation",
+                        "enabled": "[parameters('logsEnabled')]"
+                      },
+                      {
+                        "category": "Policy",
+                        "enabled": "[parameters('logsEnabled')]"
+                      },
+                      {
+                        "category": "Autoscale",
+                        "enabled": "[parameters('logsEnabled')]"
+                      },
+                      {
+                        "category": "ResourceHealth",
+                        "enabled": "[parameters('logsEnabled')]"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "outputs": {}
+            },
+            "parameters": {
+              "storageAccount": {
+                "value": "[parameters('storageAccount')]"
+              },
+              "logsEnabled": {
+                "value": "[parameters('logsEnabled')]"
+              },
+              "profileName": {
+                "value": "[parameters('profileName')]"
+              }
+            }
+          }
+        },
+        "roleDefinitionIds": [
+          "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+        ]
+      }
+    }
+  },
+  "parameters": {
+    "storageAccount": {
+      "type": "String",
+      "metadata": {
+        "displayName": "storageAccount",
+        "description": null
+      },
+      "defaultValue": "enterstorage"
+    },
+    "logsEnabled": {
+      "type": "String",
+      "metadata": {
+        "displayName": "logsEnabled",
+        "description": null
+      },
+      "defaultValue": "[parameters('logsEnabled')]"
+    },
+    "profileName": {
+      "type": "String",
+      "metadata": {
+        "displayName": "profileName",
+        "description": null
+      },
+      "defaultValue": "[parameters('profileName')]"
+    }
+  }
+}
