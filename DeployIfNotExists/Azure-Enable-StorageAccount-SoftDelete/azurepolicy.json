@@ -1,0 +1,85 @@
+{
+  "mode": "All",
+  "policyRule": {
+    "if": {
+      "allOf": [
+        {
+          "field": "type",
+          "equals": "Microsoft.Storage/storageAccounts"
+        },
+        {
+          "field": "kind",
+          "in": [
+            "Storage",
+            "StorageV2",
+            "BlobStorage",
+            "BlockBlobStorage"
+          ]
+        }
+      ]
+    },
+    "then": {
+      "effect": "DeployIfNotExists",
+      "details": {
+        "type": "Microsoft.Storage/storageAccounts/blobServices",
+        "existenceCondition": {
+          "field": "Microsoft.Storage/storageAccounts/blobServices/default.deleteRetentionPolicy.enabled",
+          "equals": true
+        },
+        "roleDefinitionIds": [
+          "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+        ],
+        "deployment": {
+          "properties": {
+            "mode": "incremental",
+            "template": {
+              "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+              "contentVersion": "1.0.0.0",
+              "parameters": {
+                "storageAccountName": {
+                  "type": "string"
+                },
+                "retentionInDays": {
+                  "type": "int"
+                }
+              },
+              "variables": {},
+              "resources": [
+                {
+                  "name": "[concat(parameters('storageAccountName'), '/default')]",
+                  "type": "Microsoft.Storage/storageAccounts/blobServices",
+                  "apiVersion": "2019-06-01",
+                  "properties": {
+                    "deleteRetentionPolicy": {
+                      "enabled": true,
+                      "days": "[parameters('retentionInDays')]"
+                    }
+                  }
+                }
+              ],
+              "outputs": {}
+            },
+            "parameters": {
+              "storageAccountName": {
+                "value": "[field('name')]"
+              },
+              "retentionInDays": {
+                "value": "[parameters('retentionInDays')]"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "parameters": {
+    "retentionInDays": {
+      "type": "Integer",
+      "metadata": {
+        "displayName": "Retention in days",
+        "description": "This defines how long the deleted object should be retained for. Allowed values are 1 to 365."
+      },
+      "defaultValue": 7
+    }
+  }
+}  
