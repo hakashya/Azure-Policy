@@ -1,0 +1,10 @@
+{"parameters": {
+    "retentionInDays": {
+      "type": "Integer",
+      "metadata": {
+        "displayName": "Retention in days",
+        "description": "This defines how long the deleted object should be retained for. Allowed values are 1 to 365."
+      },
+      "defaultValue": 7
+    }
+  }}
