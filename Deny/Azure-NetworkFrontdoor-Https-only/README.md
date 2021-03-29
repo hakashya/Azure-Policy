@@ -1,6 +1,6 @@
 # Deny creation of Network FrontDoor if routing rule has http
 
-This policy will block the create or update operation on Network FrontDoor if the Routing Rules contains http. It only allows https routing rules
+This policy will block the create or update operation on Network FrontDoor if the Routing Rules contains http.
 
 ## Try it on Portal
 
