@@ -1,0 +1,41 @@
+{
+  "mode": "All",
+  "policyRule": {
+    "if": {
+      "allOf": [
+        {
+          "field": "type",
+          "equals": "Microsoft.Network/Frontdoors"
+        },
+        {
+          "count": {
+            "field": "Microsoft.Network/frontdoors/routingRules[*]",
+            "where": {
+              "anyOf": [
+                {
+                  "count": {
+                    "field": "Microsoft.Network/frontdoors/routingRules[*].acceptedProtocols[*]",
+                    "where": {
+                      "equals": "Http",
+                      "field": "Microsoft.Network/frontdoors/routingRules[*].acceptedProtocols[*]"
+                    }
+                  },
+                  "greaterOrEquals": 1
+                },
+                {
+                  "field": "Microsoft.Network/frontDoors/routingRules[*].routeConfiguration.#Microsoft-Azure-FrontDoor-Models-FrontdoorForwardingConfiguration.forwardingProtocol",
+                  "notContains": "HttpsOnly"
+                }
+              ]
+            }
+          },
+          "greaterOrEquals": 1
+        }
+      ]
+    },
+    "then": {
+      "effect": "deny"
+    }
+  },
+  "parameters": {}
+} 
